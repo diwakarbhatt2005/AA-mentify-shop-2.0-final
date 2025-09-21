@@ -49,28 +49,34 @@ export default function Header() {
             <span className="font-bold text-xl text-[var(--text)]">Mentify AI</span>
           </Link>
 
-          {/* My Buddies dropdown - centered in header; hover-only */}
-          <div className="hidden md:flex justify-center">
+          {/* placeholder center area - keep layout even when dropdown moved */}
+          <div className="hidden md:flex justify-center" aria-hidden>
+            <div />
+          </div>
+          
+          {/* dropdown outside-click handling handled in useEffect */}
+
+          <div className="flex items-center justify-end space-x-3">
+            {/* Buddies dropdown: compact trigger, opened menu styled like Login box and smaller */}
             <div className="relative" ref={dropdownRef}>
               <button
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--header-bg)] to-[var(--card-bg)] border border-[var(--border)] text-[var(--text)] hover:shadow-lg hover:scale-105 transition-all duration-300 backdrop-blur-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDropdownOpen((s) => !s);
-                }}
+                className="flex items-center gap-2 px-3 py-1 rounded-xl border border-[var(--border)] bg-gradient-to-r from-[var(--header-bg)] to-[var(--card-bg)] text-[var(--text)] hover:shadow-md transition-transform duration-150 text-sm"
+                onClick={(e) => { e.stopPropagation(); setDropdownOpen((s) => !s); }}
+                aria-expanded={dropdownOpen}
+                aria-haspopup="menu"
               >
-                <span className="font-medium">My Buddies</span>
+                <span className="font-medium">Buddies</span>
                 <ChevronDown className={`h-4 w-4 text-[var(--text-muted)] transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              <div className={`${dropdownOpen ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'} absolute left-1/2 transform -translate-x-1/2 mt-3 min-w-[240px] max-w-[320px] w-auto bg-[var(--card-bg)]/98 backdrop-blur-sm border border-[var(--border)] rounded-2xl p-4 transition-all shadow-2xl z-50`}>
-                <div className="text-sm font-semibold text-[var(--text)] mb-3 px-2">Purchased Buddies</div>
+              <div className={`${dropdownOpen ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'} origin-top-right absolute right-0 mt-2 w-48 max-h-56 overflow-auto bg-gradient-to-r from-[var(--header-bg)] to-[var(--card-bg)] border border-[var(--border)] rounded-xl p-2 transition-all shadow-lg z-50`}>
+                <div className="text-sm font-semibold text-[var(--text)] mb-2 px-1">Purchased Buddies</div>
                 <div className="flex flex-col gap-1">
                   {buddies.map((b) => (
                     <div
                       key={b.id}
                       onClick={() => { setActiveBus(b.id); setDropdownOpen(false); }}
-                      className={`px-3 py-2 rounded-xl text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${activeBus === b.id ? 'bg-gradient-to-r from-[#02a2bd] to-[#06b6d4] text-white shadow-lg' : 'hover:bg-[var(--body-bg)] text-[var(--text)] hover:scale-105'}`}
+                      className={`px-2 py-1 rounded-lg text-left transition-colors duration-150 cursor-pointer flex items-center justify-between ${activeBus === b.id ? 'bg-gradient-to-r from-[#02a2bd] to-[#06b6d4] text-white' : 'hover:bg-[rgba(2,162,189,0.06)] text-[var(--text)]'}`}
                     >
                       <Link href={`/buddy/${b.id}`} className="block text-sm">
                         <div className="font-medium">{b.title}</div>
@@ -80,16 +86,11 @@ export default function Header() {
                     </div>
                   ))}
                   {buddies.length === 0 && (
-                    <div className="px-3 py-2 text-sm text-[var(--text-muted)] text-center">No buddies purchased</div>
+                    <div className="px-2 py-2 text-sm text-[var(--text-muted)] text-center">No buddies purchased</div>
                   )}
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* dropdown outside-click handling handled in useEffect */}
-
-          <div className="flex items-center justify-end space-x-4">
             <Button 
               variant="ghost" 
               size="sm" 
