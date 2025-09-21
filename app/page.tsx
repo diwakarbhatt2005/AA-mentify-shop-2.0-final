@@ -240,15 +240,11 @@ export default function Home() {
         {/* Ecommerce-style Hero (search + categories + products) */}
         <section className="py-8 bg-[var(--body-bg)] border-b border-[var(--border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#02a2bd]/10 text-[#02a2bd] text-sm font-semibold mb-4 mx-auto">
-                Mentify AI Shop
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-[var(--text)] font-space-grotesk mx-auto">Mentify AI — AI Buddies Marketplace</h1>
-              <p className="text-sm text-[var(--text-muted)] max-w-2xl mx-auto">Discover AI companions for problem-solving, education, finance, social media, and relationships.</p>
+            <div className="mb-6 text-left">
+              <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)] font-space-grotesk">AI Buddies Marketplace</h1>
             </div>
 
-            <div className="flex justify-center flex-wrap gap-3 mb-6">
+            <div className="flex flex-wrap gap-3 mb-6">
               {['All', 'Problem-solving', 'Education', 'Finance', 'Social Media', 'Relationships'].map((cat) => (
                 <button
                   key={cat}
@@ -268,37 +264,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Product Suggestions */}
-        <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-[var(--text)] font-space-grotesk">Product suggestions</h2>
-            <Button variant="ghost" className="text-[var(--text-muted)]">
-              View more
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-            {productSuggestions.map((suggestion, index) => (
-              <div key={index} className="bg-[var(--card-bg)]/90 backdrop-blur-sm p-4 rounded-xl border border-[var(--border)] hover:shadow-2xl hover:shadow-[#02a2bd]/20 hover:scale-105 hover:-translate-y-2 transition-all duration-300 cursor-pointer group shadow-lg">
-                <div className="text-[#02a2bd] mb-2 group-hover:scale-110 transition-transform duration-300">
-                  <suggestion.icon className="h-8 w-8" />
-                </div>
-                <h3 className="font-semibold text-[var(--text)] text-sm font-space-grotesk">{suggestion.title}</h3>
-                <p className="text-xs text-[var(--text-muted)]">{suggestion.category}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Product Suggestions removed per design requirements */}
 
         {/* AI Buddy Packages */}
         <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text)] mb-4 font-space-grotesk">
-              Choose Your AI Buddy Package
-            </h2>
-            <p className="text-lg text-[var(--text-muted)]">
-              Select the perfect package based on your needs and goals
-            </p>
+          <div className="mb-12 text-left">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)] mb-4 font-space-grotesk">Choose Your AI Buddies</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -311,152 +282,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Premium Entry Section */}
-        <section className="py-20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20"></div>
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white text-sm font-semibold mb-4 animate-pulse">
-                <Crown className="h-4 w-4 mr-2" />
-                PREMIUM PACKAGE
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)] mb-4 font-space-grotesk">
-                Premium Entry
-              </h2>
-              <p className="text-xl text-[var(--text-muted)] max-w-2xl mx-auto">
-                Get everything you need with our most comprehensive AI buddy package
-              </p>
-            </div>
+        {/* Premium Entry removed per design requirements */}
 
-            <div className="bg-[var(--card-bg)]/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-[var(--border)] overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                {/* Left Column - Features */}
-                <div className="p-8 lg:p-12">
-                  <div className="mb-8">
-                    <h3 className="text-2xl font-bold text-[var(--text)] mb-2 font-space-grotesk">Premium Entry</h3>
-                    <p className="text-lg text-[var(--text-muted)]">Complete AI Ecosystem</p>
-                  </div>
-
-                  <div className="space-y-4 mb-8">
-                    {[
-                      'Access to all 6 AI Buddies for 1 year',
-                      '1 Personal Buddy (Lifetime access)',
-                      'Priority support & updates',
-                      'Advanced AI capabilities'
-                    ].map((feature, index) => (
-                      <div key={index} className="flex items-center space-x-3">
-                        <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                          <Check className="h-4 w-4 text-green-600" />
-                        </div>
-                        <span className="text-[var(--text)]">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                      <strong>Note:</strong> After 3rd month, requires $100 bot purchase to remain active
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right Column - Pricing & Visual */}
-                <div className="p-8 lg:p-12 bg-gradient-to-br from-[#02a2bd]/5 to-[#06b6d4]/5 relative">
-                  <div className="text-center mb-8">
-                    <div className="relative inline-block mb-6">
-                      <div className="w-32 h-32 bg-gradient-to-br from-[#02a2bd] to-[#06b6d4] rounded-full flex items-center justify-center shadow-2xl">
-                        <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
-                          <Crown className="h-12 w-12 text-white" />
-                        </div>
-                      </div>
-                      <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                        NEW
-                      </div>
-                    </div>
-
-                    <div className="mb-6">
-                      <div className="text-5xl font-bold text-[var(--text)] mb-2 font-space-grotesk">$3,800</div>
-                      <p className="text-sm text-[var(--text-muted)]">One-time payment</p>
-                      <p className="text-sm text-green-600 font-semibold">Save $4,200 compared to individual purchases</p>
-                    </div>
-
-                    {isAffiliate ? (
-                      <Button 
-                        onClick={handleAffiliateClick}
-                        className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                      >
-                        Get Premium Access
-                      </Button>
-                    ) : (
-                      <Button 
-                        onClick={() => {
-                          addItem({
-                            id: 'premium-entry',
-                            title: 'Premium Entry',
-                            price: 3800,
-                            type: 'premium',
-                            focusArea: 'Complete AI Ecosystem'
-                          });
-                        }}
-                        className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                      >
-                        Get Premium Access
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Focus Areas */}
-        <section className="py-16 hero-gradient">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-[var(--text)] mb-4 font-space-grotesk">
-              AI Buddies Focus Areas
-            </h2>
-            <p className="text-lg text-[var(--text-muted)] mb-12">
-              Each buddy specializes in one of these key life areas
-            </p>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-              {[
-                { name: 'Problem Solver', icon: Bot, color: '#2563EB' },
-                { name: 'Education', icon: Bot, color: '#06B6D4' },
-                { name: 'Health & Fitness', icon: Heart, color: '#10B981' },
-                { name: 'Love & Dating', icon: Heart, color: '#7C3AED' },
-                { name: 'Finance', icon: DollarSign, color: '#F59E0B' },
-                { name: 'Social Media', icon: MessageSquare, color: '#EF4444' }
-              ].map((area, index) => (
-                <div key={index} className="text-center group cursor-pointer">
-                  <div 
-                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl"
-                    style={{ backgroundColor: `${area.color}20` }}
-                  >
-                    <area.icon className="h-8 w-8" style={{ color: area.color }} />
-                  </div>
-                  <h3 className="font-semibold text-[var(--text)] text-sm font-space-grotesk">{area.name}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Focus Areas removed per design requirements; only the three main sections remain */}
 
         {/* Personal Bots Section */}
         <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text)] mb-4 font-space-grotesk">
-              Personal Bots by Community
-            </h2>
-            <p className="text-lg text-[var(--text-muted)]">
-              Custom AI bots created by our community members
-            </p>
-            <div className="mt-4 p-4 bg-[var(--card-bg)]/50 rounded-lg border border-[var(--border)] max-w-2xl mx-auto">
-              <p className="text-sm text-[var(--text-muted)]">
-                <strong>Commission Structure:</strong> 40% Direct • 10% L1 • 5% L2 • 5% L3 • 40% Company
-              </p>
-            </div>
+          <div className="mb-12 text-left">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)] mb-4 font-space-grotesk">Personal Bots by Community</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -470,58 +303,69 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Footer */}
+        {/* Footer updated to match provided Image 2 */}
         <footer className="bg-[var(--header-bg)] border-t border-[var(--border)] py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               <div className="col-span-1 md:col-span-2">
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#02a2bd] to-[#06b6d4] flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">M</span>
+                    <span className="text-white font-bold text-lg">A</span>
                   </div>
-                  <span className="font-bold text-2xl text-[var(--text)] font-space-grotesk">Mentify AI</span>
+                  <span className="font-bold text-2xl text-[var(--text)] font-space-grotesk">AI Flix</span>
                 </div>
                 <p className="text-[var(--text-muted)] mb-4 max-w-md">
-                  Empowering individuals with personalized AI assistance across all aspects of life and work.
+                  Transforming how people interact with AI, empowering careers through revolutionary AI Buddies' aligned with your unique identity.
                 </p>
                 <div className="flex space-x-4">
-                  {['facebook', 'twitter', 'instagram', 'linkedin'].map((social) => (
+                  {['facebook', 'twitter', 'linkedin', 'instagram'].map((social) => (
                     <div key={social} className="w-10 h-10 bg-[var(--card-bg)] rounded-full flex items-center justify-center hover:bg-[#02a2bd] hover:text-white transition-colors cursor-pointer">
                       <span className="text-sm font-semibold">{social[0].toUpperCase()}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              
+
+              <div>
+                <h3 className="font-semibold text-[var(--text)] mb-4 font-space-grotesk">Quick Links</h3>
+                <ul className="space-y-2 text-[var(--text-muted)]">
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">About AI Flix</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Business Opportunities</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">AI Buddies</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Success Stories</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Help Center</a></li>
+                </ul>
+              </div>
+
               <div>
                 <h3 className="font-semibold text-[var(--text)] mb-4 font-space-grotesk">Products</h3>
                 <ul className="space-y-2 text-[var(--text-muted)]">
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">AI Buddies</a></li>
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Premium Entry</a></li>
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Personal Bots</a></li>
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Enterprise</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold text-[var(--text)] mb-4 font-space-grotesk">Support</h3>
-                <ul className="space-y-2 text-[var(--text-muted)]">
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Help Center</a></li>
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Contact Us</a></li>
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Privacy Policy</a></li>
-                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Terms of Service</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Main AI Flix Bot</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Business Mentor</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Health & Wellness</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Finance Buddy</a></li>
+                  <li><a href="#" className="hover:text-[#02a2bd] transition-colors">Social Media Buddy</a></li>
                 </ul>
               </div>
             </div>
-            
+
             <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row items-center justify-between">
               <div className="text-sm text-[var(--text-muted)] mb-4 md:mb-0">
-                © 2024 Mentify AI. All rights reserved.
+                © 2024 AI Flix. All rights reserved.
               </div>
-              <div className="flex items-center space-x-6 text-sm text-[var(--text-muted)]">
-                <a href="#" className="hover:text-[#02a2bd] transition-colors">Privacy</a>
-                <a href="#" className="hover:text-[#02a2bd] transition-colors">Terms</a>
-                <a href="#" className="hover:text-[#02a2bd] transition-colors">Cookies</a>
+              <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-8 text-sm text-[var(--text-muted)]">
+                <div>
+                  <div className="font-semibold text-[var(--text)]">Contact Us</div>
+                  <div className="text-[var(--text-muted)]">support@mentify-ai.com</div>
+                  <div className="text-[var(--text-muted)]">+1 (555) 123-4567</div>
+                  <div className="text-[var(--text-muted)]">Global Operations</div>
+                </div>
+
+                <div className="flex items-center space-x-6">
+                  <a href="#" className="hover:text-[#02a2bd] transition-colors">Terms & Conditions</a>
+                  <a href="#" className="hover:text-[#02a2bd] transition-colors">Privacy Policy</a>
+                  <a href="#" className="hover:text-[#02a2bd] transition-colors">Cookie Policy</a>
+                </div>
               </div>
             </div>
           </div>

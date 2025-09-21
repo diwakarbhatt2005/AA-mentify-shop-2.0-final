@@ -8,7 +8,7 @@ interface ProductCardProps {
   id: string;
   title: string;
   price: number;
-  description: string;
+  description: string | string[];
   image: string;
   rating: number;
   isPremium?: boolean;
@@ -88,7 +88,20 @@ export default function ProductCard({
         </div>
 
         <h3 className="font-semibold text-base text-[var(--text)] mb-2 font-space-grotesk">{title}</h3>
-        <p className="text-xs text-[var(--text-muted)] mb-3 line-clamp-2">{description}</p>
+        {/* Render description as bullet points for clarity */}
+        {Array.isArray(description) ? (
+          <ul className="text-xs text-[var(--text-muted)] mb-3 list-disc list-inside space-y-1">
+            {description.map((d, i) => (
+              <li key={i} className="line-clamp-3">{d}</li>
+            ))}
+          </ul>
+        ) : (
+          <ul className="text-xs text-[var(--text-muted)] mb-3 list-disc list-inside">
+            {description.split(/\.|\n/).map((part, i) => part.trim()).filter(Boolean).map((part, i) => (
+              <li key={i} className="line-clamp-3">{part}</li>
+            ))}
+          </ul>
+        )}
         {creator && (
           <div className="text-xs text-[var(--text-muted)] mb-3">
             Created by <span className="font-medium text-[#02a2bd]">{creator}</span>

@@ -30,6 +30,8 @@ export default function CheckoutPage() {
   const [placeOfBirth, setPlaceOfBirth] = useState('');
   const { setUser } = useUser();
   const [detailsErrors, setDetailsErrors] = useState<{ userId?: string; firstName?: string; lastName?: string }>({});
+  const [showPartnerPopup, setShowPartnerPopup] = useState(false);
+  const [partnerOptIn, setPartnerOptIn] = useState<boolean | null>(null);
 
   const finalTotal = total;
 
@@ -66,6 +68,43 @@ export default function CheckoutPage() {
     if (Object.keys(errs).length === 0) {
       setUser({ userId, firstName, lastName, dob: dob || undefined, tob: tob || undefined, placeOfBirth: placeOfBirth || undefined });
       setStep('complete');
+    }
+  };
+
+  // Partner eligibility: only show popup for these main package prices
+  const partnerEligiblePrices = [300, 600, 900, 1200, 1500, 1800, 3800];
+
+  const hasEligiblePurchase = () => {
+    if (!items || items.length === 0) return false;
+    // Check item price, item total (price * quantity) and overall cart total
+    const totalNum = Number(total || 0);
+    const found = items.some((it) => {
+      const priceNum = Number((it as any).price || 0);
+      const qty = Number((it as any).quantity || 1);
+      const itemTotal = priceNum * qty;
+      if (partnerEligiblePrices.includes(priceNum)) return true;
+      if (partnerEligiblePrices.includes(itemTotal)) return true;
+      return false;
+    });
+    if (found) return true;
+    return partnerEligiblePrices.includes(Math.round(totalNum));
+  };
+
+  const proceedToPaymentFinal = (optIn: boolean) => {
+    // record opt-in locally (could be sent to server)
+    setPartnerOptIn(optIn);
+    // Clear cart and navigate to a simple confirmation (placeholder)
+    clearCart();
+    // For now, navigate back to home or show a success state — keep simple
+    router.push('/');
+  };
+
+  const handleProceedToPayment = () => {
+    if (hasEligiblePurchase()) {
+      // navigate to partner selection page for a clearer flow
+      router.push('/partner-selection');
+    } else {
+      proceedToPaymentFinal(false);
     }
   };
 
@@ -276,7 +315,7 @@ export default function CheckoutPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="dob" className="text-[var(--text)]">Date of Birth</Label>
+                        <Label htmlFor="dob" className="text-[var(--text)]">Date of Birth (Optional)</Label>
                       <Input
                         id="dob"
                         type="date"
@@ -286,7 +325,7 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="tob" className="text-[var(--text)]">Time of Birth</Label>
+                      <Label htmlFor="tob" className="text-[var(--text)]">Time of Birth (Optional)</Label>
                       <Input
                         id="tob"
                         type="time"
@@ -328,7 +367,7 @@ export default function CheckoutPage() {
                   <p className="text-[var(--text-muted)] mb-6">
                     Your Mentify AI Premium account is ready. Complete payment to activate your buddies.
                   </p>
-                  <Button className="bg-[#02a2bd] hover:bg-[#028a9d] text-white px-8">
+                  <Button onClick={handleProceedToPayment} className="bg-[#02a2bd] hover:bg-[#028a9d] text-white px-8">
                     Proceed to Payment
                   </Button>
                 </div>
@@ -382,3 +421,25 @@ export default function CheckoutPage() {
     </main>
   );
 }
+
+// Add partner popup modal component inside the same file for simplicity
+function PartnerPopup({ isOpen, onClose, onChoose }: { isOpen: boolean; onClose: () => void; onChoose: (optIn: boolean) => void }) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-[var(--card-bg)] rounded-2xl p-8 max-w-md w-full shadow-2xl border border-[var(--border)]">
+        <h3 className="text-xl font-semibold mb-2">Become a Partner?</h3>
+        <p className="text-[var(--text-muted)] mb-4">It looks like you purchased one of our main packages — would you like to join as a partner to earn commissions for referrals?</p>
+        <div className="flex space-x-3 justify-end">
+          <Button variant="ghost" onClick={() => { onClose(); onChoose(false); }}>
+            Continue as Customer
+          </Button>
+          <Button onClick={() => { onClose(); onChoose(true); }} className="bg-[#02a2bd] text-white">
+            Join as Partner
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
