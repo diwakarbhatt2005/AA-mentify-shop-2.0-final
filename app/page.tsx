@@ -167,6 +167,31 @@ export default function Home() {
   const [isAffiliate, setIsAffiliate] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showAffiliateMessage, setShowAffiliateMessage] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const categoryMap: Record<string, string[]> = {
+    All: [],
+    'Problem-solving': ['problem', 'solver', 'problem solver'],
+    Education: ['education', 'learning', 'learn'],
+    Finance: ['finance', 'investment', 'money'],
+    'Social Media': ['social', 'social media'],
+    Relationships: ['love', 'dating', 'relationship']
+  };
+
+  const filteredBuddies = buddyPackages.filter((b) => {
+    const q = searchQuery.trim().toLowerCase();
+    // search match
+    if (q) {
+      const hay = `${b.title} ${b.description} ${b.focusArea}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+
+    if (activeCategory === 'All') return true;
+    const keywords = categoryMap[activeCategory] || [];
+    const focus = (b.focusArea || '').toLowerCase();
+    return keywords.some((k) => focus.includes(k) || (b.title || '').toLowerCase().includes(k));
+  });
 
   useEffect(() => {
     // Check if user came from affiliate link
@@ -212,23 +237,34 @@ export default function Home() {
       <div className="relative z-10">
         <Header />
         
-        {/* Hero Section */}
-        <section className="hero-gradient py-20 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="mb-8">
-              <span className="inline-flex items-center px-4 py-2 rounded-full bg-[#02a2bd]/10 text-[#02a2bd] text-sm font-semibold mb-6 animate-pulse">
-                🤖 Mentify AI Shop
-              </span>
+        {/* Ecommerce-style Hero (search + categories + products) */}
+        <section className="py-8 bg-[var(--body-bg)] border-b border-[var(--border)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#02a2bd]/10 text-[#02a2bd] text-sm font-semibold mb-4 mx-auto">
+                Mentify AI Shop
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-[var(--text)] font-space-grotesk mx-auto">Mentify AI — AI Buddies Marketplace</h1>
+              <p className="text-sm text-[var(--text-muted)] max-w-2xl mx-auto">Discover AI companions for problem-solving, education, finance, social media, and relationships.</p>
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#02a2bd] to-[#06b6d4] bg-clip-text text-transparent font-space-grotesk">
-              Discover and access AI buddies In MentifyAI Shop<br />
-              <span className="text-[#02a2bd] animate-pulse">for every aspect of life</span>
-            </h1>
-            
-            <p className="text-xl text-[var(--text-muted)] mb-8 max-w-3xl mx-auto">
-              Get personalized AI assistance for problem-solving, education, health, relationships, finance, and social media success.
-            </p>
+
+            <div className="flex justify-center flex-wrap gap-3 mb-6">
+              {['All', 'Problem-solving', 'Education', 'Finance', 'Social Media', 'Relationships'].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-150 border ${activeCategory === cat ? 'bg-[#02a2bd] text-white border-transparent' : 'bg-[var(--card-bg)] text-[var(--text)] border-[var(--border)] hover:shadow-md'}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredBuddies.slice(0, 4).map((buddy) => (
+                <ProductCard key={buddy.id} {...buddy} />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -265,7 +301,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {buddyPackages.map((buddy) => (
               <ProductCard 
                 key={buddy.id} 
@@ -423,18 +459,13 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {personalBots.map((bot) => (
-              <div key={bot.id} className="relative">
-                <ProductCard 
-                  {...bot} 
-                />
-                <div className="mt-2 text-center">
-                  <p className="text-sm text-[var(--text-muted)]">
-                    Created by <span className="font-medium text-[#02a2bd]">{bot.creator}</span>
-                  </p>
-                </div>
-              </div>
+              <ProductCard 
+                key={bot.id}
+                {...bot}
+                creator={bot.creator}
+              />
             ))}
           </div>
         </section>

@@ -17,6 +17,7 @@ interface ProductCardProps {
   isAffiliate?: boolean;
   onNonAffiliateClick?: () => void;
   onAffiliateClick?: () => void;
+  creator?: string;
 }
 
 export default function ProductCard({
@@ -32,6 +33,7 @@ export default function ProductCard({
   isAffiliate = false,
   onNonAffiliateClick,
   onAffiliateClick
+  , creator
 }: ProductCardProps) {
   const { addItem } = useCart();
 
@@ -46,7 +48,7 @@ export default function ProductCard({
   };
 
   return (
-    <div className={`bg-[var(--card-bg)] rounded-xl shadow-sm border border-[var(--border)] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 max-w-sm mx-auto ${isPremium ? 'ring-2 ring-[#02a2bd] relative hover:ring-4 hover:ring-[#02a2bd]/50' : 'hover:shadow-[#02a2bd]/20'}`}>
+    <div className={`bg-[var(--card-bg)] rounded-xl shadow-sm border border-[var(--border)] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 w-full h-full ${isPremium ? 'ring-2 ring-[#02a2bd] relative hover:ring-4 hover:ring-[#02a2bd]/50' : 'hover:shadow-[#02a2bd]/20'}`}>
       {isPremium && (
         <div className="absolute top-3 right-3 z-10">
           <div className="bg-gradient-to-r from-[#02a2bd] to-[#06b6d4] text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
@@ -70,7 +72,7 @@ export default function ProductCard({
         </button>
       </div>
 
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-[#02a2bd] bg-[#02a2bd]/10 px-2 py-1 rounded">
             {focusArea}
@@ -87,8 +89,12 @@ export default function ProductCard({
 
         <h3 className="font-semibold text-base text-[var(--text)] mb-2 font-space-grotesk">{title}</h3>
         <p className="text-xs text-[var(--text-muted)] mb-3 line-clamp-2">{description}</p>
-        
-        <div className="flex items-center justify-between">
+        {creator && (
+          <div className="text-xs text-[var(--text-muted)] mb-3">
+            Created by <span className="font-medium text-[#02a2bd]">{creator}</span>
+          </div>
+        )}
+        <div className="mt-auto flex items-center justify-between">
           <div className="text-xl font-bold text-[var(--text)] font-space-grotesk">
             ${price.toLocaleString()}
           </div>
