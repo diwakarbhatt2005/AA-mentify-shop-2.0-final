@@ -88,20 +88,28 @@ export default function ProductCard({
         </div>
 
         <h3 className="font-semibold text-base text-[var(--text)] mb-2 font-space-grotesk">{title}</h3>
-        {/* Render description as bullet points for clarity */}
-        {Array.isArray(description) ? (
-          <ul className="text-xs text-[var(--text-muted)] mb-3 list-disc list-inside space-y-1">
-            {description.map((d, i) => (
-              <li key={i} className="line-clamp-3">{d}</li>
-            ))}
-          </ul>
-        ) : (
-          <ul className="text-xs text-[var(--text-muted)] mb-3 list-disc list-inside">
-            {description.split(/\.|\n/).map((part, i) => part.trim()).filter(Boolean).map((part, i) => (
-              <li key={i} className="line-clamp-3">{part}</li>
-            ))}
-          </ul>
-        )}
+        {/* Render description as up to two full bullet points; show '+N more' if additional */}
+        {(() => {
+          const parts: string[] = Array.isArray(description)
+            ? description
+            : description.split(/\.|\n/).map((p) => p.trim()).filter(Boolean);
+
+          const visible = parts.slice(0, 2);
+          const extraCount = Math.max(0, parts.length - visible.length);
+
+          return (
+            <div className="mb-3">
+              <ul className="text-xs text-[var(--text-muted)] list-disc pl-4 space-y-0.5">
+                {visible.map((d, i) => (
+                  <li key={i} className="leading-tight">{d}</li>
+                ))}
+              </ul>
+              {extraCount > 0 && (
+                <div className="text-xs text-[var(--text-muted)] mt-1">+{extraCount} more</div>
+              )}
+            </div>
+          );
+        })()}
         {creator && (
           <div className="text-xs text-[var(--text-muted)] mb-3">
             Created by <span className="font-medium text-[#02a2bd]">{creator}</span>
