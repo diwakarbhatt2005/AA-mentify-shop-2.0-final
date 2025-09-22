@@ -11,7 +11,7 @@ import { useCart } from '@/contexts/CartContext';
 const buddyPackages = [
   {
     id: '1-buddy',
-    title: '1 My Buddy',
+    title: 'My Buddy',
     price: 300,
     description: 'Get one intelligent AI companion that specializes in problem-solving, providing personalized solutions and guidance for your daily challenges and decision-making needs.',
     image: '',
@@ -21,7 +21,7 @@ const buddyPackages = [
   },
   {
     id: '2-buddies',
-    title: '2 My Buddies',
+    title: 'My Buddies',
     price: 600,
     description: 'Unlock two specialized AI assistants: one for problem-solving and another for educational support, helping you learn new skills and master complex topics efficiently.',
     image: '',
@@ -31,7 +31,7 @@ const buddyPackages = [
   },
   {
     id: '3-buddies',
-    title: '3 My Buddies',
+    title: 'My Buddies',
     price: 900,
     description: 'Access three AI experts covering problem-solving, education, and health & wellness. Get personalized fitness plans, mental health support, and lifestyle optimization tips.',
     image: '',
@@ -41,7 +41,7 @@ const buddyPackages = [
   },
   {
     id: '4-buddies',
-    title: '4 My Buddies',
+    title: 'My Buddies',
     price: 1200,
     description: 'Four AI specialists including a love & dating coach that provides relationship advice, dating tips, communication strategies, and helps build meaningful connections.',
     image: '',
@@ -51,7 +51,7 @@ const buddyPackages = [
   },
   {
     id: '5-buddies',
-    title: '5 My Buddies',
+    title: 'My Buddies',
     price: 1500,
     description: 'Five AI experts including a finance buddy that offers investment advice, budgeting strategies, financial planning, and helps you build wealth and achieve financial freedom.',
     image: '',
@@ -61,7 +61,7 @@ const buddyPackages = [
   },
   {
     id: '6-buddies',
-    title: '6 My Buddies',
+    title: 'My Buddies',
     price: 1800,
     description: 'Complete AI ecosystem with six specialists including a social media expert that creates engaging content, grows your following, and maximizes your online presence and influence.',
     image: '',

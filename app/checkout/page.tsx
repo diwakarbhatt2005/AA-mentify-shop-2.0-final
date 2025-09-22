@@ -634,14 +634,21 @@ function PartnerPopup({ isOpen, onClose, onChoose }: { isOpen: boolean; onClose:
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[var(--card-bg)] rounded-2xl p-8 max-w-md w-full shadow-2xl border border-[var(--border)]">
+      <div className="bg-[var(--card-bg)] rounded-2xl p-6 max-w-md w-full shadow-2xl md:border border-[var(--border)]">
         <h3 className="text-xl font-semibold mb-2">Become a Partner?</h3>
         <p className="text-[var(--text-muted)] mb-4">It looks like you purchased one of our main packages — would you like to join as a partner to earn commissions for referrals?</p>
-        <div className="flex space-x-3 justify-end">
-          <Button variant="ghost" onClick={() => { onClose(); onChoose(false); }}>
+        <div className="flex flex-col sm:flex-row sm:space-x-3 gap-3 justify-end">
+          <Button
+            variant="outline"
+            onClick={() => { onClose(); onChoose(false); }}
+            className="w-full sm:w-auto text-[var(--text)]"
+          >
             Continue as Customer
           </Button>
-          <Button onClick={() => { onClose(); onChoose(true); }} className="bg-[#02a2bd] text-white">
+          <Button
+            onClick={() => { onClose(); onChoose(true); }}
+            className="w-full sm:w-auto bg-[#02a2bd] text-white"
+          >
             Join as Partner
           </Button>
         </div>

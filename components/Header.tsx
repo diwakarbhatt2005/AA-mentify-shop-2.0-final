@@ -40,7 +40,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 bg-[var(--header-bg)] border-b border-[var(--border)]">
+  <header className="sticky top-0 z-30 bg-[var(--header-bg)] md:border-b border-[var(--border)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-3 items-center h-16">
           <Link href="/" className="flex items-center space-x-2">
