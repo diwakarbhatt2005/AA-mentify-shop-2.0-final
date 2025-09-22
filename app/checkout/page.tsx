@@ -11,6 +11,9 @@ import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
 import { useToast } from '@/hooks/use-toast';
 import { verifyEmail } from '@/components/services/auth';
+import { setPassword as createPassword } from '@/components/services/setpass';
+import { verifyOtp } from '@/components/services/otp';
+import { updateUserDetails } from '@/components/services/userdetail';
 
 type CheckoutStep = 'email' | 'otp' | 'password' | 'details' | 'complete';
 
@@ -72,17 +75,39 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.length === 6) {
-      // Here you would typically verify the OTP with the backend
-      // For now, we'll just proceed to the next step
+    if (otp.length !== 6) {
       toast({
-        title: "OTP Verified!",
-        description: "Email verified successfully.",
-        variant: "default"
+        variant: "destructive",
+        title: "Invalid OTP",
+        description: "Please enter a 6-digit OTP code.",
       });
-      setStep('password');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await verifyOtp(email, otp);
+      if (response.success && response.data.is_verified) {
+        toast({
+          title: "OTP Verified!",
+          description: "Email verified successfully.",
+          variant: "default"
+        });
+        setStep('password');
+      } else {
+        throw new Error(response.message || 'OTP verification failed');
+      }
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      toast({
+        variant: "destructive",
+        title: "OTP Verification Failed",
+        description: error instanceof Error ? error.message : "Invalid OTP code. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,25 +142,107 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password && password === confirmPassword) {
-      // proceed to user details step before completing
-      setStep('details');
+    if (!password || password !== confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Password Error",
+        description: "Passwords don't match. Please check and try again.",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await createPassword(email, password);
+      if (response.success) {
+        toast({
+          title: "Password Set Successfully!",
+          description: "Your password has been created. Please complete your profile.",
+          variant: "default",
+        });
+        setStep('details');
+      } else {
+        throw new Error(response.message || 'Failed to set password');
+      }
+    } catch (error) {
+      console.error('Password creation error:', error);
+      toast({
+        variant: "destructive",
+        title: "Password Creation Failed",
+        description: error instanceof Error ? error.message : "Unable to set password. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDetailsSubmit = (e: React.FormEvent) => {
+  const handleDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // basic required validation: userId, firstName, lastName
+    
+    // Basic required validation: userId, firstName, lastName
     const errs: any = {};
     if (!userId) errs.userId = 'User ID is required';
     if (!firstName) errs.firstName = 'First name is required';
     if (!lastName) errs.lastName = 'Last name is required';
+    
     setDetailsErrors(errs);
+    
     if (Object.keys(errs).length === 0) {
-      setUser({ userId, firstName, lastName, dob: dob || undefined, tob: tob || undefined, placeOfBirth: placeOfBirth || undefined });
-      setStep('complete');
+      setIsLoading(true);
+      try {
+        // Format time - try just the time portion first (HH:MM:SS format)
+        let formattedTimeOfBirth = '';
+        if (tob) {
+          // Convert HH:MM to HH:MM:SS format (most APIs expect this format)
+          formattedTimeOfBirth = `${tob}:00`;
+        }
+
+        // Prepare the payload for API - only include non-empty values
+        const userDetailsPayload = {
+          email: email,
+          username: userId,
+          first_name: firstName,
+          last_name: lastName,
+          date_of_birth: dob || undefined, // Don't send empty strings
+          place_of_birth: placeOfBirth || undefined,
+          time_of_birth: formattedTimeOfBirth || undefined
+        };
+
+        const response = await updateUserDetails(userDetailsPayload);
+        
+        if (response.success) {
+          // Update local user context
+          setUser({ 
+            userId, 
+            firstName, 
+            lastName, 
+            dob: dob || undefined, 
+            tob: tob || undefined, 
+            placeOfBirth: placeOfBirth || undefined 
+          });
+          
+          toast({
+            title: "Profile Updated Successfully!",
+            description: "Your user details have been saved successfully.",
+            variant: "default",
+          });
+          
+          setStep('complete');
+        } else {
+          throw new Error(response.message || 'Failed to update user details');
+        }
+      } catch (error) {
+        console.error('User details update error:', error);
+        toast({
+          variant: "destructive",
+          title: "Update Failed",
+          description: error instanceof Error ? error.message : "Unable to update user details. Please try again.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -346,9 +453,16 @@ export default function CheckoutPage() {
                   <Button 
                     type="submit" 
                     className="w-full bg-[#02a2bd] hover:bg-[#028a9d] text-white"
-                    disabled={!password || password !== confirmPassword}
+                    disabled={!password || password !== confirmPassword || isLoading}
                   >
-                    Create Account & Continue
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : (
+                      'Create Account & Continue'
+                    )}
                   </Button>
                 </form>
               )}
@@ -436,9 +550,16 @@ export default function CheckoutPage() {
                   <Button
                     type="submit"
                     className="w-full bg-[#02a2bd] hover:bg-[#028a9d] text-white"
-                    disabled={!userId || !firstName || !lastName}
+                    disabled={!userId || !firstName || !lastName || isLoading}
                   >
-                    Complete Account Setup
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Updating Profile...
+                      </>
+                    ) : (
+                      'Complete Account Setup'
+                    )}
                   </Button>
                 </form>
               )}
