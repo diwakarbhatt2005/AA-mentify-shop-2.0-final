@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun, ShoppingCart, ArrowLeft, User, ChevronDown } from 'lucide-react';
+import { Moon, Sun, ShoppingCart, ArrowLeft, User, ChevronDown, Menu, X } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ export default function Header() {
   const { itemCount } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [activeBus, setActiveBus] = useState<string | null>(null);
   const { items } = useCart();
@@ -56,7 +57,7 @@ export default function Header() {
           
           {/* dropdown outside-click handling handled in useEffect */}
 
-          <div className="flex items-center justify-end space-x-3">
+          <div className="hidden md:flex items-center justify-end space-x-3">
             {/* Buddies dropdown: compact trigger, opened menu styled like Login box and smaller */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -121,10 +122,64 @@ export default function Header() {
               </Button>
             </div>
           </div>
+          {/* Mobile controls */}
+          <div className="flex items-center justify-end md:hidden">
+            <button
+              aria-label="Open menu"
+              className="p-2 rounded-md text-[var(--text)]"
+              onClick={() => setMobileOpen((s) => !s)}
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </div>
       </header>
-      
+      {/* Mobile panel: full-width, fixed under header when open */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-x-0 top-16 z-50 bg-[var(--header-bg)] shadow-lg p-4">
+          <div className="flex flex-col gap-3">
+            <div>
+              <div className="text-sm font-semibold text-[var(--text)] mb-2">Buddies</div>
+              <div className="flex flex-col gap-1">
+                {buddies.map((b) => (
+                  <Link key={b.id} href={`/buddy/${b.id}`} onClick={() => setMobileOpen(false)} className="px-3 py-2 rounded-lg text-[var(--text)] hover:bg-[rgba(2,162,189,0.04)]">
+                    <div className="font-medium">{b.title}</div>
+                    <div className="text-xs text-[var(--text-muted)]">${b.price.toLocaleString()}</div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button className="p-2 rounded-md text-[var(--text)]" onClick={() => { setIsCartOpen(true); setMobileOpen(false); }}>
+                  <div className="relative">
+                    <ShoppingCart className="h-5 w-5" />
+                    {itemCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-[#02a2bd] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {itemCount}
+                      </span>
+                    )}
+                  </div>
+                </button>
+                <button className="p-2 rounded-md" onClick={toggleTheme}>
+                  {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+                </button>
+                <button className="p-2 rounded-md">
+                  <User className="h-5 w-5" />
+                </button>
+              </div>
+              <div>
+                <Button className="px-4 py-2 rounded-xl border border-[var(--border)] bg-gradient-to-r from-[var(--header-bg)] to-[var(--card-bg)] text-[var(--text)]" onClick={() => setMobileOpen(false)}>
+                  Login
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
