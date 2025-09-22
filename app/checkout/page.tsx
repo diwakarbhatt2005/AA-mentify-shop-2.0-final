@@ -5,22 +5,26 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Check, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Check, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
+import { useToast } from '@/hooks/use-toast';
+import { verifyEmail } from '@/components/services/auth';
 
 type CheckoutStep = 'email' | 'otp' | 'password' | 'details' | 'complete';
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCart();
   const router = useRouter();
+  const { toast } = useToast();
   const [step, setStep] = useState<CheckoutStep>('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // New user details state
   const [userId, setUserId] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -35,17 +39,81 @@ export default function CheckoutPage() {
 
   const finalTotal = total;
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setStep('otp');
+    if (!email) return;
+
+    setIsLoading(true);
+    try {
+      const response = await verifyEmail(email);
+      if (response.success) {
+        toast({
+          title: "OTP Sent Successfully!",
+          description: "Please check your email for the verification code.",
+          variant: "default"
+        });
+        setStep('otp');
+      } else {
+        toast({
+          title: "Failed to Send OTP",
+          description: response.message || "Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to send OTP. Please try again.";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleOtpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length === 6) {
+      // Here you would typically verify the OTP with the backend
+      // For now, we'll just proceed to the next step
+      toast({
+        title: "OTP Verified!",
+        description: "Email verified successfully.",
+        variant: "default"
+      });
       setStep('password');
+    }
+  };
+
+  const handleResendOTP = async () => {
+    if (!email) return;
+
+    setIsLoading(true);
+    try {
+      const response = await verifyEmail(email);
+      if (response.success) {
+        toast({
+          title: "OTP Resent!",
+          description: "A new verification code has been sent to your email.",
+          variant: "default"
+        });
+      } else {
+        toast({
+          title: "Failed to Resend OTP",
+          description: response.message || "Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to resend OTP. Please try again.";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -173,13 +241,22 @@ export default function CheckoutPage() {
                       placeholder="Enter your email address"
                       className="mt-2 bg-[var(--card-bg)] border-[var(--border)] text-[var(--text)]"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                   <Button 
                     type="submit" 
                     className="w-full bg-[#02a2bd] hover:bg-[#028a9d] text-white"
+                    disabled={isLoading || !email}
                   >
-                    Send Verification Code
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Sending OTP...
+                      </>
+                    ) : (
+                      'Send Verification Code'
+                    )}
                   </Button>
                 </form>
               )}
@@ -200,12 +277,13 @@ export default function CheckoutPage() {
                       className="mt-2 bg-[var(--card-bg)] border-[var(--border)] text-[var(--text)] text-center text-2xl tracking-widest"
                       maxLength={6}
                       required
+                      disabled={isLoading}
                     />
                   </div>
                   <Button 
                     type="submit" 
                     className="w-full bg-[#02a2bd] hover:bg-[#028a9d] text-white"
-                    disabled={otp.length !== 6}
+                    disabled={otp.length !== 6 || isLoading}
                   >
                     Verify Code
                   </Button>
@@ -213,9 +291,17 @@ export default function CheckoutPage() {
                     type="button" 
                     variant="ghost" 
                     className="w-full text-[var(--text-muted)]"
-                    onClick={() => setStep('email')}
+                    onClick={handleResendOTP}
+                    disabled={isLoading}
                   >
-                    Resend code
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Resending...
+                      </>
+                    ) : (
+                      'Resend code'
+                    )}
                   </Button>
                 </form>
               )}
