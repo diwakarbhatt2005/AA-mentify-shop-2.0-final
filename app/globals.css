@@ -1,9 +1,12 @@
+/* stylelint-disable at-rule-no-unknown -- Tailwind @tailwind directives are processed by PostCSS */
+/* Load web fonts first to avoid FOIT/flash-of-unstyled text when Tailwind generates utilities */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+/* stylelint-enable at-rule-no-unknown */
 
 /* Theme variables */
 :root[data-theme="light"] {
@@ -38,29 +41,54 @@
 
 /* Base styles */
 @layer base {
-  * {
-    @apply border-border;
+  /* Safe global reset: avoid applying Tailwind utilities to universal selector which
+     may reference undefined utility classes (causes build errors). Use robust CSS
+     that works even if Tailwind tokens change. */
+  *, *::before, *::after {
+    box-sizing: border-box;
   }
+
+  /* Ensure app fills viewport and remove default body margin */
+  html, body, #__next {
+    height: 100%;
+  }
+
   body {
-    @apply text-[var(--text)] transition-colors duration-300 font-inter;
+    margin: 0;
+    color: var(--text);
     background: var(--body-bg);
+    /* gentle transition for theme changes */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* fallback font-family without relying on Tailwind @apply */
+    font-family: 'Inter', 'Poppins', Arial, Helvetica, sans-serif;
   }
-  
+
+  /* Headings should use Space Grotesk */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-space-grotesk;
+    font-family: 'Space Grotesk', sans-serif;
   }
 }
 
 @layer utilities {
   .line-clamp-2 {
+    /* Robust two-line clamp: use the WebKit box method for broad support and
+       provide a graceful text-overflow fallback for non-webkit browsers. */
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; /* primary behavior */
+    line-clamp: 2; /* standard property for compatible toolchains */
+    /* Fallbacks for other engines */
+    text-overflow: ellipsis;
+    white-space: normal;
   }
   
   .font-space-grotesk {
     font-family: 'Space Grotesk', sans-serif;
+  }
+  
+  .font-inter {
+    font-family: 'Inter', 'Poppins', Arial, Helvetica, sans-serif;
   }
 }
 
@@ -134,10 +162,64 @@
   50% { box-shadow: 0 0 20px rgba(2, 162, 189, 0.8), 0 0 30px rgba(2, 162, 189, 0.6); }
 }
 
+@keyframes slide-in {
+  0% { 
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-5%) scale(1.02);
+    opacity: 0.9;
+  }
+  100% { 
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  0% { 
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% { 
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes notification-slide {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-slide-out {
+  animation: slide-out 0.3s ease-in forwards;
+}
+
+/* Respect users who prefer reduced motion: disable non-essential animations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-glow,
+  .animate-slide-in,
+  .animate-slide-out {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
 }

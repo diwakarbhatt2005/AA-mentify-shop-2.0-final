@@ -17,7 +17,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Mentify AI - Your Personal AI Buddies',
+  title: 'Mentify AI - Your Personal My Buddies',
   description: 'Get personalized AI assistance for problem-solving, education, health, relationships, finance, and social media success.',
 };
 

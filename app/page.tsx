@@ -11,7 +11,7 @@ import { useCart } from '@/contexts/CartContext';
 const buddyPackages = [
   {
     id: '1-buddy',
-    title: '1 AI Buddy',
+    title: '1 My Buddy',
     price: 300,
     description: 'Get one intelligent AI companion that specializes in problem-solving, providing personalized solutions and guidance for your daily challenges and decision-making needs.',
     image: '',
@@ -21,7 +21,7 @@ const buddyPackages = [
   },
   {
     id: '2-buddies',
-    title: '2 AI Buddies',
+    title: '2 My Buddies',
     price: 600,
     description: 'Unlock two specialized AI assistants: one for problem-solving and another for educational support, helping you learn new skills and master complex topics efficiently.',
     image: '',
@@ -31,7 +31,7 @@ const buddyPackages = [
   },
   {
     id: '3-buddies',
-    title: '3 AI Buddies',
+    title: '3 My Buddies',
     price: 900,
     description: 'Access three AI experts covering problem-solving, education, and health & wellness. Get personalized fitness plans, mental health support, and lifestyle optimization tips.',
     image: '',
@@ -41,7 +41,7 @@ const buddyPackages = [
   },
   {
     id: '4-buddies',
-    title: '4 AI Buddies',
+    title: '4 My Buddies',
     price: 1200,
     description: 'Four AI specialists including a love & dating coach that provides relationship advice, dating tips, communication strategies, and helps build meaningful connections.',
     image: '',
@@ -51,7 +51,7 @@ const buddyPackages = [
   },
   {
     id: '5-buddies',
-    title: '5 AI Buddies',
+    title: '5 My Buddies',
     price: 1500,
     description: 'Five AI experts including a finance buddy that offers investment advice, budgeting strategies, financial planning, and helps you build wealth and achieve financial freedom.',
     image: '',
@@ -61,7 +61,7 @@ const buddyPackages = [
   },
   {
     id: '6-buddies',
-    title: '6 AI Buddies',
+    title: '6 My Buddies',
     price: 1800,
     description: 'Complete AI ecosystem with six specialists including a social media expert that creates engaging content, grows your following, and maximizes your online presence and influence.',
     image: '',
@@ -241,7 +241,7 @@ export default function Home() {
         <section className="py-8 bg-[var(--body-bg)] border-b border-[var(--border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-6 text-left">
-              <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)] font-space-grotesk">AI Buddies Marketplace</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)] font-space-grotesk">My Buddies Marketplace</h1>
             </div>
 
             <div className="flex flex-wrap gap-3 mb-6">
@@ -269,7 +269,7 @@ export default function Home() {
         {/* AI Buddy Packages */}
         <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-left">
-            <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)] mb-4 font-space-grotesk">Choose Your AI Buddies</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)] mb-4 font-space-grotesk">Choose Your My Buddies</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

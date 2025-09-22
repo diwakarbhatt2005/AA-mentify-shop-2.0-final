@@ -64,7 +64,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               {isLogin ? 'Welcome Back!' : 'Join Mentify AI'}
             </h2>
             <p className="text-[var(--text-muted)]">
-              {isLogin ? 'Sign in to access your AI buddies' : 'Create your account to get started'}
+              {isLogin ? 'Sign in to access your My buddies' : 'Create your account to get started'}
             </p>
           </div>
 

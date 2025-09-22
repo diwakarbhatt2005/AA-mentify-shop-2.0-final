@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useReducer, ReactNode } from 'react';
+import { createContext, useContext, useReducer, ReactNode, useState, useEffect } from 'react';
 
 export interface CartItem {
   id: string;
@@ -89,6 +89,8 @@ interface CartContextType extends CartState {
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+  showNotification: boolean;
+  notificationItem: string;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -100,8 +102,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     itemCount: 0
   });
 
+  // Notification state
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationItem, setNotificationItem] = useState('');
+
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
     dispatch({ type: 'ADD_ITEM', payload: item });
+    
+    // Show notification
+    setNotificationItem(item.title);
+    setShowNotification(true);
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
   };
 
   const removeItem = (id: string) => {
@@ -122,9 +137,72 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addItem,
       removeItem,
       updateQuantity,
-      clearCart
+      clearCart,
+      showNotification,
+      notificationItem
     }}>
       {children}
+      
+      {/* Add to Cart Notification */}
+      {showNotification && (
+        <div
+          className="fixed bottom-6 right-6"
+          role="status"
+          aria-live="polite"
+          data-testid="cart-notification"
+          style={{
+            position: 'fixed',
+            bottom: '1.5rem',
+            right: '1.5rem',
+            zIndex: 99999,
+            pointerEvents: 'auto',
+            backgroundColor: '#02a2bd',
+            color: 'white',
+            padding: '14px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 12px 30px rgba(2,162,189,0.18)',
+            minWidth: '280px',
+            maxWidth: '420px',
+            transform: 'translateY(20px)',
+            animation: 'notification-slide 360ms cubic-bezier(0.2,0.9,0.2,1) forwards'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ 
+              backgroundColor: 'rgba(255,255,255,0.14)', 
+              borderRadius: '50%', 
+              padding: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <span style={{fontSize: '16px', lineHeight: 1}}>✓</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontWeight: 700, fontSize: '15px', margin: 0 }}>
+                Added to Cart
+              </p>
+              <p style={{ fontSize: '13px', margin: '4px 0 0 0', opacity: 0.95 }}>
+                {notificationItem}
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowNotification(false)}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                padding: '6px',
+                fontSize: '16px'
+              }}
+              aria-label="Close notification"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </CartContext.Provider>
   );
 }
